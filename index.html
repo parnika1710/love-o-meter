@@ -3,43 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Love-O-Meter & Voucher Reveal</title>
+    <title>The Love-O-Meter</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Google Fonts for that cute, modern aesthetic -->
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght=500;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <div class="stars-bg"></div>
-
     <div class="container">
-        <!-- SCREEN 1: THE GAME -->
-        <div id="quiz-screen" class="card">
+        <div id="setup-screen" class="card">
             <h1 class="title">🔮 The Love-O-Meter</h1>
-            <p class="subtitle">Settle the debate once and for all...</p>
-            
-            <div id="question-container">
-                <h2 id="question-text" class="question">Loading question...</h2>
-                <div class="options-grid">
-                    <button class="option-btn" onclick="handleAnswer('partner1')">Me</button>
-                    <button class="option-btn" onclick="handleAnswer('partner2')">Them</button>
-                    <button class="option-btn" onclick="handleAnswer('both')">Both equally 🫣</button>
-                </div>
-            </div>
-            <div class="progress-bar-container">
-                <div id="progress" class="progress-bar"></div>
+            <p class="subtitle">Who wants to go first?</p>
+            <div class="options-grid">
+                <button class="option-btn" onclick="startQuiz('She')">🙋‍♀️ She/Her</button>
+                <button class="option-btn" onclick="startQuiz('He')">🙋‍♂️ He/Him</button>
             </div>
         </div>
 
-        <!-- SCREEN 2: THE REVEAL -->
+        <div id="quiz-screen" class="card hidden">
+            <h1 class="title" id="player-turn-title">Player 1's Turn</h1>
+            <p class="subtitle">Answer honestly... 🫣</p>
+            
+            <div id="question-container">
+                <h2 id="question-text" class="question">Question goes here...</h2>
+                <div class="options-grid">
+                    <button class="option-btn" onclick="handleAnswer('Me')">It's definitely Me</button>
+                    <button class="option-btn" onclick="handleAnswer('Them')">Definitely Them</button>
+                    <button class="option-btn" onclick="handleAnswer('Both')">Both of us equally</button>
+                </div>
+            </div>
+            <div class="progress-bar-container">
+                <div id="progress" class="progress-bar" style="width: 0%;"></div>
+            </div>
+        </div>
+
+        <div id="transition-screen" class="card hidden">
+            <h1 class="title">🔄 Player 1 Done!</h1>
+            <p class="subtitle" id="transition-text">Now hand the phone over to the boy...</p>
+            <button class="option-btn" onclick="startPlayer2()">Ready for Player 2 ⚡</button>
+        </div>
+
         <div id="reveal-screen" class="card hidden">
             <h1 class="title">💖 Compatibility Locked!</h1>
             <div class="meter-circle">
                 <span id="final-percentage">0%</span>
             </div>
-            <p class="result-message">Verdict: Absolute Chaos, but make it romantic.</p>
+            <p class="result-message" id="verdict-text">Calculating...</p>
             
-            <p class="instruction">✨ Click a voucher below to scratch off your reward! ✨</p>
+            <p class="instruction">✨ Going good. Let's see you activity together  ✨</p>
             
             <div class="voucher-grid">
                 <div class="scratch-card" onclick="scratchCard(this)">
@@ -61,6 +71,139 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // The Questions Matrix
+        const questions = [
+            "Who is most likely to order takeout when there is food at home?",
+            "Who starts arguments completely inside their own head?",
+            "Who is the primary stealer of hoodies/snacks?",
+            "Who takes 45 minutes just to choose a movie on Netflix?"
+        ];
+
+        let player1Gender = "";
+        let player2Gender = "";
+        
+        let isPlayer2Turn = false;
+        let currentQuestionIndex = 0;
+
+        // Arrays to store answers sequentially (e.g., ['Me', 'Them', 'Both', 'Me'])
+        let player1Answers = [];
+        let player2Answers = [];
+
+        function startQuiz(gender) {
+            player1Gender = gender;
+            player2Gender = (gender === "She") ? "He" : "She";
+
+            document.getElementById("setup-screen").classList.add("hidden");
+            document.getElementById("quiz-screen").classList.remove("hidden");
+            
+            document.getElementById("player-turn-title").textContent = `${player1Gender}'s Turn`;
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const questionText = document.getElementById("question-text");
+            const progressBar = document.getElementById("progress");
+
+            if (currentQuestionIndex < questions.length) {
+                questionText.textContent = questions[currentQuestionIndex];
+                const progressPercent = (currentQuestionIndex / questions.length) * 100;
+                progressBar.style.width = progressPercent + "%";
+            } else {
+                // Current player finished all questions
+                if (!isPlayer2Turn) {
+                    showTransitionScreen();
+                } else {
+                    calculateAndRevealScore();
+                }
+            }
+        }
+
+        function handleAnswer(choice) {
+            if (!isPlayer2Turn) {
+                player1Answers.push(choice);
+            } else {
+                player2Answers.push(choice);
+            }
+
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+
+        function showTransitionScreen() {
+            document.getElementById("quiz-screen").classList.add("hidden");
+            document.getElementById("transition-screen").classList.remove("hidden");
+            
+            const nextPlayerName = (player2Gender === "He") ? "the boy" : "the girl";
+            document.getElementById("transition-text").textContent = `Now hand the phone over to ${nextPlayerName} to answer the exact same questions!`;
+        }
+
+        function startPlayer2() {
+            isPlayer2Turn = true;
+            currentQuestionIndex = 0; // Reset index to loop questions again
+            
+            document.getElementById("transition-screen").classList.add("hidden");
+            document.getElementById("quiz-screen").classList.remove("hidden");
+            
+            document.getElementById("player-turn-title").textContent = `${player2Gender}'s Turn`;
+            loadQuestion();
+        }
+
+        function calculateAndRevealScore() {
+            document.getElementById("quiz-screen").classList.add("hidden");
+            document.getElementById("reveal-screen").classList.remove("hidden");
+
+            let matchingAnswersCount = 0;
+
+            // Logique validation matching:
+            // Since they are answering relative to themselves, their perspective maps inversely:
+            // If P1 says 'Me', P2 must say 'Them' to match perfectly.
+            // If P1 says 'Both', P2 must say 'Both' to match perfectly.
+            for (let i = 0; i < questions.length; i++) {
+                let ans1 = player1Answers[i];
+                let ans2 = player2Answers[i];
+
+                if (ans1 === "Both" && ans2 === "Both") {
+                    matchingAnswersCount++;
+                } else if (ans1 === "Me" && ans2 === "Them") {
+                    matchingAnswersCount++;
+                } else if (ans1 === "Them" && ans2 === "Me") {
+                    matchingAnswersCount++;
+                }
+            }
+
+            // Calculate matching percentage base
+            let matchPercentage = Math.round((matchingAnswersCount / questions.length) * 100);
+            
+            // Inject a bit of couple realism (give them a base minimum score so it stays cute)
+            if (matchPercentage < 40) matchPercentage = 62; 
+            if (matchPercentage === 100) matchPercentage = 98; // 98% because 100% means no banter left!
+
+            // Set custom message based on score
+            const verdictText = document.getElementById("verdict-text");
+            if (matchPercentage > 80) {
+                verdictText.textContent = "Verdict: Soulmates. Stop being so perfect. 💕";
+            } else {
+                verdictText.textContent = "Verdict: Absolute chaos, but you're obsessed with each other. 🔥";
+            }
+
+            // Ticking Animation for percentage
+            const finalPercentage = document.getElementById("final-percentage");
+            let count = 0;
+            const counterInterval = setInterval(function() {
+                count += 2;
+                if (count >= matchPercentage) {
+                    clearInterval(counterInterval);
+                    finalPercentage.textContent = matchPercentage + "%";
+                } else {
+                    finalPercentage.textContent = count + "%";
+                }
+            }, 20);
+        }
+
+        function scratchCard(element) {
+            element.classList.add("scratched");
+        }
+    </script>
 </body>
 </html>
