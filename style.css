@@ -1,4 +1,4 @@
-/* Core Styling & Variables */
+
 :root {
     --bg-gradient: linear-gradient(135deg, #2c1b4d 0%, #1a0b2e 100%);
     --card-bg: rgba(255, 255, 255, 0.08);
@@ -25,7 +25,6 @@ body {
     overflow-x: hidden;
 }
 
-/* Glassmorphism Card Container */
 .container {
     width: 100%;
     max-width: 480px;
@@ -186,7 +185,7 @@ body {
     transform: translateY(-100%);
 }
 
-/* Animations */
+
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(15px); }
     to { opacity: 1; transform: translateY(0); }

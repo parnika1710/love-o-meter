@@ -72,7 +72,7 @@
     </div>
 
     <script>
-        // The Questions Matrix
+        
         const questions = [
             "Who is most likely to order takeout when there is food at home?",
             "Who starts arguments completely inside their own head?",
@@ -86,7 +86,6 @@
         let isPlayer2Turn = false;
         let currentQuestionIndex = 0;
 
-        // Arrays to store answers sequentially (e.g., ['Me', 'Them', 'Both', 'Me'])
         let player1Answers = [];
         let player2Answers = [];
 
@@ -110,7 +109,6 @@
                 const progressPercent = (currentQuestionIndex / questions.length) * 100;
                 progressBar.style.width = progressPercent + "%";
             } else {
-                // Current player finished all questions
                 if (!isPlayer2Turn) {
                     showTransitionScreen();
                 } else {
@@ -140,7 +138,7 @@
 
         function startPlayer2() {
             isPlayer2Turn = true;
-            currentQuestionIndex = 0; // Reset index to loop questions again
+            currentQuestionIndex = 0; 
             
             document.getElementById("transition-screen").classList.add("hidden");
             document.getElementById("quiz-screen").classList.remove("hidden");
@@ -155,10 +153,6 @@
 
             let matchingAnswersCount = 0;
 
-            // Logique validation matching:
-            // Since they are answering relative to themselves, their perspective maps inversely:
-            // If P1 says 'Me', P2 must say 'Them' to match perfectly.
-            // If P1 says 'Both', P2 must say 'Both' to match perfectly.
             for (let i = 0; i < questions.length; i++) {
                 let ans1 = player1Answers[i];
                 let ans2 = player2Answers[i];
@@ -172,14 +166,11 @@
                 }
             }
 
-            // Calculate matching percentage base
             let matchPercentage = Math.round((matchingAnswersCount / questions.length) * 100);
             
-            // Inject a bit of couple realism (give them a base minimum score so it stays cute)
             if (matchPercentage < 40) matchPercentage = 62; 
-            if (matchPercentage === 100) matchPercentage = 98; // 98% because 100% means no banter left!
+            if (matchPercentage === 100) matchPercentage = 98; 
 
-            // Set custom message based on score
             const verdictText = document.getElementById("verdict-text");
             if (matchPercentage > 80) {
                 verdictText.textContent = "Verdict: Soulmates. Stop being so perfect. 💕";
@@ -187,7 +178,6 @@
                 verdictText.textContent = "Verdict: Absolute chaos, but you're obsessed with each other. 🔥";
             }
 
-            // Ticking Animation for percentage
             const finalPercentage = document.getElementById("final-percentage");
             let count = 0;
             const counterInterval = setInterval(function() {
