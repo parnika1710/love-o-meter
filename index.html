@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Love-O-Meter & Voucher Reveal</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts for that cute, modern aesthetic -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="stars-bg"></div>
+
+    <div class="container">
+        <!-- SCREEN 1: THE GAME -->
+        <div id="quiz-screen" class="card">
+            <h1 class="title">🔮 The Love-O-Meter</h1>
+            <p class="subtitle">Settle the debate once and for all...</p>
+            
+            <div id="question-container">
+                <h2 id="question-text" class="question">Loading question...</h2>
+                <div class="options-grid">
+                    <button class="option-btn" onclick="handleAnswer('partner1')">Me</button>
+                    <button class="option-btn" onclick="handleAnswer('partner2')">Them</button>
+                    <button class="option-btn" onclick="handleAnswer('both')">Both equally 🫣</button>
+                </div>
+            </div>
+            <div class="progress-bar-container">
+                <div id="progress" class="progress-bar"></div>
+            </div>
+        </div>
+
+        <!-- SCREEN 2: THE REVEAL -->
+        <div id="reveal-screen" class="card hidden">
+            <h1 class="title">💖 Compatibility Locked!</h1>
+            <div class="meter-circle">
+                <span id="final-percentage">0%</span>
+            </div>
+            <p class="result-message">Verdict: Absolute Chaos, but make it romantic.</p>
+            
+            <p class="instruction">✨ Click a voucher below to scratch off your reward! ✨</p>
+            
+            <div class="voucher-grid">
+                <div class="scratch-card" onclick="scratchCard(this)">
+                    <div class="scratch-overlay">Scratch Me 🪄</div>
+                    <div class="scratch-content">
+                        <h3>🍕 Date Night</h3>
+                        <p>One free dinner at your favorite spot.</p>
+                    </div>
+                </div>
+                
+                <div class="scratch-card" onclick="scratchCard(this)">
+                    <div class="scratch-overlay">Scratch Me 🪄</div>
+                    <div class="scratch-content">
+                        <h3>🎬 Movie Choice</h3>
+                        <p>Remote control privilege for one whole weekend.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
